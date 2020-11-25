@@ -70,15 +70,14 @@ class TestConstructingBQMFromSerializable:
 
     def test_all_linear_coefficients_are_loaded(self):
         bqm_dict = {
-            "linear": [(0, 2.0), (3, 0.5), (1, -1.0)],
+            "linear": [(0, 2.0), (2, 0.5), (1, -1.0)],
             "quadratic": [(0, 1, 1.2), (1, 2, 4.0)],
             "offset": 0.5,
             "vartype": "SPIN"
         }
 
         bqm = bqm_from_serializable(bqm_dict)
-
-        assert bqm.linear == {0: 2.0, 3: 0.5, 1: -1.0}
+        assert bqm.linear == {0: 2.0, 2: 0.5, 1: -1.0}
 
     def test_all_quadratic_coefficients_are_loaded(self):
         bqm_dict = {
