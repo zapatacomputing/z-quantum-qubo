@@ -1,8 +1,6 @@
 import pytest
 import dimod
-from dimod.serialization.json import DimodEncoder, DimodDecoder
-from zquantum.qubo.io import bqm_to_serializable, bqm_from_serializable
-import json
+from zquantum.qubo.io import bqm_to_serializable, bqm_from_serializable, save_qubo, load_qubo
 from io import StringIO
 
 
@@ -11,7 +9,7 @@ class TestConvertingBQMToSerializable:
     def test_all_linear_coefficients_are_stored(self):
         bqm = dimod.BinaryQuadraticModel(
             {0: 1, 1: 2, 2: 3},
-            {(1, 2): 0.5, (1, 0): 0.7, (0,2): 0.9},
+            {(1, 2): 0.5, (1, 0): 0.7, (0, 2): 0.9},
             -10,
             vartype=dimod.BINARY
         )
@@ -123,11 +121,20 @@ class TestConstructingBQMFromSerializable:
 
         assert bqm.vartype == expected_bqm_vartype
 
-    # output_file = StringIO()
-    #
-    # save_qubo(qubo, output_file)
-    # # Move to the beginning of the file
-    # output_file.seek(0)
-    # new_qubo = load_qubo(output_file)
-    #
-    # assert qubo == new_qubo
+
+def test_loading_saved_qubo_gives_the_same_qubo():
+    qubo = dimod.BinaryQuadraticModel(
+        {0: 0.5, 2: -2.0, 3: 3},
+        {(2, 1): 0.5, (1, 0): 0.4, (0, 3): -0.1},
+        -5,
+        vartype="BINARY"
+    )
+
+    output_file = StringIO()
+
+    save_qubo(qubo, output_file)
+    # Move to the beginning of the file
+    output_file.seek(0)
+    new_qubo = load_qubo(output_file)
+
+    assert qubo == new_qubo
