@@ -1,6 +1,9 @@
 import numpy as np
 from openfermion import IsingOperator
-from zquantum.qubo.conversions import convert_qubo_to_openfermion_ising, convert_openfermion_ising_to_qubo
+from zquantum.qubo.conversions import (
+    convert_qubo_to_openfermion_ising,
+    convert_openfermion_ising_to_qubo,
+)
 import dimod
 
 
@@ -9,7 +12,7 @@ def test_qubo_with_binary_fractions():
         {0: 1, 1: 2, 2: 3},
         {(1, 2): 0.5, (1, 0): -0.25, (0, 2): 2.125},
         -1,
-        vartype=dimod.BINARY
+        vartype=dimod.BINARY,
     )
     ising = convert_qubo_to_openfermion_ising(qubo)
     new_qubo = convert_openfermion_ising_to_qubo(ising)
@@ -21,11 +24,11 @@ def test_qubo_with_non_binary_fractions():
         {0: 1.01, 1: -2.03, 2: 3},
         {(1, 2): 0.51, (1, 0): -0.9, (0, 2): 2.125},
         -1,
-        vartype=dimod.BINARY
+        vartype=dimod.BINARY,
     )
     ising = convert_qubo_to_openfermion_ising(qubo)
     new_qubo = convert_openfermion_ising_to_qubo(ising)
-    
+
     assert len(qubo.linear) == len(new_qubo.linear)
     assert len(qubo.quadratic) == len(new_qubo.quadratic)
 
@@ -37,5 +40,3 @@ def test_qubo_with_non_binary_fractions():
 
     for key in qubo.quadratic.keys():
         assert np.isclose(qubo.quadratic[key], new_qubo.quadratic[key])
-
-

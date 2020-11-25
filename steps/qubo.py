@@ -3,8 +3,8 @@ from zquantum.qubo import save_qubo, load_qubo
 from zquantum.core.measurement import Measurements
 
 
-def generate_random_qubo(size:int, seed:int=None):
-    qubo = generators.uniform(size, 'BINARY', low=-1, high=1, seed=seed)
+def generate_random_qubo(size: int, seed: int = None):
+    qubo = generators.uniform(size, "BINARY", low=-1, high=1, seed=seed)
     save_qubo(qubo, "qubo.json")
 
 

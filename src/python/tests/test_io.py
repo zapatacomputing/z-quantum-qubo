@@ -1,17 +1,21 @@
 import pytest
 import dimod
-from zquantum.qubo.io import bqm_to_serializable, bqm_from_serializable, save_qubo, load_qubo
+from zquantum.qubo.io import (
+    bqm_to_serializable,
+    bqm_from_serializable,
+    save_qubo,
+    load_qubo,
+)
 from io import StringIO
 
 
 class TestConvertingBQMToSerializable:
-
     def test_all_linear_coefficients_are_stored(self):
         bqm = dimod.BinaryQuadraticModel(
             {0: 1, 1: 2, 2: 3},
             {(1, 2): 0.5, (1, 0): 0.7, (0, 2): 0.9},
             -10,
-            vartype=dimod.BINARY
+            vartype=dimod.BINARY,
         )
 
         serializable = bqm_to_serializable(bqm)
@@ -23,13 +27,15 @@ class TestConvertingBQMToSerializable:
             {0: 0.5, 2: -2.0, 3: 3},
             {(2, 1): 0.5, (1, 0): 0.4, (0, 3): -0.1},
             -5,
-            vartype=dimod.BINARY
+            vartype=dimod.BINARY,
         )
 
         serializable = bqm_to_serializable(bqm)
 
         assert set(serializable["quadratic"]) == {
-            (1, 2, 0.5), (0, 1, 0.4), (0, 3, -0.1)
+            (1, 2, 0.5),
+            (0, 1, 0.4),
+            (0, 3, -0.1),
         }
 
     @pytest.mark.parametrize("offset", [-5, 10, 0])
@@ -38,7 +44,7 @@ class TestConvertingBQMToSerializable:
             {0: 0.5, 2: -2.0, 3: 3},
             {(2, 1): 0.5, (1, 0): 0.4, (0, 3): -0.1},
             offset,
-            vartype=dimod.BINARY
+            vartype=dimod.BINARY,
         )
 
         serializable = bqm_to_serializable(bqm)
@@ -51,14 +57,14 @@ class TestConvertingBQMToSerializable:
             ("SPIN", "SPIN"),
             ("BINARY", "BINARY"),
             (dimod.BINARY, "BINARY"),
-            (dimod.SPIN, "SPIN")
-        ]
+            (dimod.SPIN, "SPIN"),
+        ],
     )
     def test_vartype_is_stored(self, vartype, expected_output_vartype):
         bqm = dimod.BinaryQuadraticModel(
             {0: 0.5, 2: -2.0, 3: 3},
             {(2, 1): 0.5, (1, 0): 0.4, (0, 3): -0.1},
-            vartype=vartype
+            vartype=vartype,
         )
 
         serializable = bqm_to_serializable(bqm)
@@ -67,13 +73,12 @@ class TestConvertingBQMToSerializable:
 
 
 class TestConstructingBQMFromSerializable:
-
     def test_all_linear_coefficients_are_loaded(self):
         bqm_dict = {
             "linear": [(0, 2.0), (2, 0.5), (1, -1.0)],
             "quadratic": [(0, 1, 1.2), (1, 2, 4.0)],
             "offset": 0.5,
-            "vartype": "SPIN"
+            "vartype": "SPIN",
         }
 
         bqm = bqm_from_serializable(bqm_dict)
@@ -84,7 +89,7 @@ class TestConstructingBQMFromSerializable:
             "linear": [(0, 1.0), (1, 2.0), (2, 0.5)],
             "quadratic": [(0, 1, 2.1), (1, 2, 4.0), (1, 3, -1.0)],
             "offset": 0.1,
-            "vartype": "BINARY"
+            "vartype": "BINARY",
         }
 
         bqm = bqm_from_serializable(bqm_dict)
@@ -97,7 +102,7 @@ class TestConstructingBQMFromSerializable:
             "linear": [(0, 1.0), (1, 2.0), (2, 0.5)],
             "quadratic": [(0, 1, 2.1), (1, 2, 4.0), (1, 3, -1.0)],
             "offset": offset,
-            "vartype": "BINARY"
+            "vartype": "BINARY",
         }
 
         bqm = bqm_from_serializable(bqm_dict)
@@ -106,14 +111,14 @@ class TestConstructingBQMFromSerializable:
 
     @pytest.mark.parametrize(
         "vartype, expected_bqm_vartype",
-        [("SPIN", dimod.SPIN), ("BINARY", dimod.BINARY)]
+        [("SPIN", dimod.SPIN), ("BINARY", dimod.BINARY)],
     )
     def test_vartype_is_set_correctly(self, vartype, expected_bqm_vartype):
         bqm_dict = {
             "linear": [(0, 1.0), (2, 2.0), (1, 0.5)],
             "quadratic": [(0, 1, 1), (1, 2, 4.0), (1, 3, 1e-2)],
             "offset": 0.5,
-            "vartype": vartype
+            "vartype": vartype,
         }
 
         bqm = bqm_from_serializable(bqm_dict)
@@ -126,7 +131,7 @@ def test_loading_saved_qubo_gives_the_same_qubo():
         {0: 0.5, 2: -2.0, 3: 3},
         {(2, 1): 0.5, (1, 0): 0.4, (0, 3): -0.1},
         -5,
-        vartype="BINARY"
+        vartype="BINARY",
     )
 
     output_file = StringIO()
