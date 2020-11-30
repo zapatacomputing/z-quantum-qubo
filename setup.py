@@ -8,6 +8,7 @@ setuptools.setup(
     author_email="info@zapatacomputing.com",
     description="A library containing logic for manipulating QUBOs for Orquestra.",
     url="https://github.com/zapatacomputing/z-quantum-qubo",
+    packages=setuptools.find_namespace_packages(include=["zquantum.*"]),
     package_dir={"": "src/python"},
     classifiers=(
         "Programming Language :: Python :: 3",
