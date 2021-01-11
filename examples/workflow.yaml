@@ -1,0 +1,57 @@
+# Workflow API version
+apiVersion: io.orquestra.workflow/1.0.0
+
+# Prefix for workflow ID
+name: qubo-example
+
+imports:
+- name: z-quantum-core
+  type: git
+  parameters:
+    repository: "git@github.com:zapatacomputing/z-quantum-core.git"
+    branch: "master"
+- name: z-quantum-qubo
+  type: git
+  parameters:
+    repository: "git@github.com:zapatacomputing/z-quantum-qubo.git"
+    branch: "main"
+
+
+steps:
+- name: generate-random-qubo
+  config:
+    runtime:
+      language: python3
+      imports: [z-quantum-core, z-quantum-qubo]
+      parameters:
+        file: z-quantum-qubo/steps/qubo.py
+        function: generate_random_qubo
+  inputs:
+  - size: 5
+    type: int
+  - seed: 1000
+    type: int
+
+  outputs:
+  - name: qubo
+    type: qubo
+
+- name: get-qubo-solution
+  passed: [generate-random-qubo]
+  config:
+    runtime:
+      language: python3
+      imports: [z-quantum-core, z-quantum-qubo]
+      parameters:
+        file: z-quantum-qubo/steps/qubo.py
+        function: get_exact_qubo_solution
+  inputs:
+  - qubo: ((generate-random-qubo.qubo))
+    type: qubo
+  outputs:
+  - name: solution
+    type: measurements
+
+types:
+- qubo
+- measurements
