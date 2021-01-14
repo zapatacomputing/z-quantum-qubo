@@ -22,4 +22,4 @@ def get_exact_qubo_solution(qubo):
     sampleset = ExactSolver().sample(qubo)
     best_sample_dict = sampleset.first.sample
     solution_bitstring = tuple(best_sample_dict[i] for i in sorted(best_sample_dict))
-    Measurements([solution_bitstring]).save("exact_solution.json.json")
+    Measurements([solution_bitstring]).save("exact_solution.json")
