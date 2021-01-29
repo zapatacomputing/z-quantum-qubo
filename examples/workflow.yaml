@@ -14,7 +14,7 @@ imports:
   type: git
   parameters:
     repository: "git@github.com:zapatacomputing/z-quantum-qubo.git"
-    branch: "master"
+    branch: "dev"
 
 
 steps:
@@ -36,7 +36,7 @@ steps:
   - name: qubo
     type: qubo
 
-- name: get-qubo-solution
+- name: get-exact-qubo-solution
   passed: [generate-random-qubo]
   config:
     runtime:
@@ -52,6 +52,34 @@ steps:
   - name: exact_solution
     type: measurements
 
+- name: get-qubo-solution-with-neal
+  passed: [generate-random-qubo]
+  config:
+    runtime:
+      language: python3
+      imports: [z-quantum-core, z-quantum-qubo]
+      parameters:
+        file: z-quantum-qubo/steps/solvers.py
+        function: solve_qubo
+  inputs:
+  - qubo: ((generate-random-qubo.qubo))
+    type: qubo
+  - solver_specs:
+      module_name: neal
+      function_name: SimulatedAnnealingSampler
+    type: specs
+  - sample_params:
+      num_sweeps: 1000
+      initial_states_generator: "random"
+    type: specs
+  
+
+  outputs:
+  - name: solution
+    type: measurements
+
+
 types:
 - qubo
 - measurements
+- specs
