@@ -9,7 +9,7 @@ def solve_qubo(qubo, solver_specs, sample_params):
     sample_params_dict = yaml.load(sample_params, Loader=yaml.SafeLoader)
     solver = create_object(solver_specs_dict)
     qubo = load_qubo(qubo)
-    sampleset = sampler.sample(qubo, **sample_params_dict)
+    sampleset = solver.sample(qubo, **sample_params_dict)
     best_sample_dict = sampleset.first.sample
     solution_bitstring = tuple(best_sample_dict[i] for i in sorted(best_sample_dict))
     Measurements([solution_bitstring]).save("solution.json")
