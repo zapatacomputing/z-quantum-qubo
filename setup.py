@@ -8,11 +8,13 @@ setuptools.setup(
     author_email="info@zapatacomputing.com",
     description="A library containing logic for manipulating QUBOs for Orquestra.",
     url="https://github.com/zapatacomputing/z-quantum-qubo",
-    packages=setuptools.find_namespace_packages(include=["zquantum.*"], where="src/python"),
+    packages=setuptools.find_namespace_packages(
+        include=["zquantum.*"], where="src/python"
+    ),
     package_dir={"": "src/python"},
     classifiers=(
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
     ),
-    install_requires=["z-quantum-core", "dimod==0.9.11"],
+    install_requires=["z-quantum-core", "dimod==0.9.11", "dwave-neal==0.5.7"],
 )
