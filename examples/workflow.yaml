@@ -51,6 +51,8 @@ steps:
   outputs:
   - name: exact_solution
     type: measurements
+  - name: sampleset
+    type: sampleset
 
 - name: get-qubo-solution-with-neal
   passed: [generate-random-qubo]
@@ -77,9 +79,12 @@ steps:
   outputs:
   - name: solution
     type: measurements
+  - name: sampleset
+    type: sampleset
 
 
 types:
 - qubo
 - measurements
+- sampleset
 - specs
