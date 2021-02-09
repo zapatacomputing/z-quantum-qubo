@@ -1,4 +1,4 @@
-import yaml
+import json
 from zquantum.core.utils import create_object
 from zquantum.qubo import load_qubo
 from zquantum.core.measurement import Measurements
