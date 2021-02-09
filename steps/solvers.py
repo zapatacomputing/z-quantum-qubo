@@ -1,6 +1,6 @@
 import json
 from zquantum.core.utils import create_object
-from zquantum.qubo import load_qubo
+from zquantum.qubo import load_qubo, save_sampleset
 from zquantum.core.measurement import Measurements
 
 

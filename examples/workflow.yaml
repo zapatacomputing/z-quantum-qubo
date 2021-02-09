@@ -36,23 +36,22 @@ steps:
   - name: qubo
     type: qubo
 
-- name: get-exact-qubo-solution
+- name: get-qubo-solution-exact
   passed: [generate-random-qubo]
   config:
     runtime:
       language: python3
       imports: [z-quantum-core, z-quantum-qubo]
       parameters:
-        file: z-quantum-qubo/steps/qubo.py
-        function: get_exact_qubo_solution
+        file: z-quantum-qubo/steps/solvers.py
+        function: solve_qubo
   inputs:
   - qubo: ((generate-random-qubo.qubo))
     type: qubo
-  outputs:
-  - name: exact_solution
-    type: measurements
-  - name: sampleset
-    type: sampleset
+  - solver_specs:
+      module_name: dimod
+      function_name: ExactSolver
+    type: specs
 
 - name: get-qubo-solution-with-neal
   passed: [generate-random-qubo]
