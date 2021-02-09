@@ -4,11 +4,13 @@ from zquantum.qubo import load_qubo, save_sampleset
 from zquantum.core.measurement import Measurements
 
 
-def solve_qubo(qubo, solver_specs, sample_params):
+def solve_qubo(qubo, solver_specs, sampler_params=None):
     """Solves qubo using any sampler implementing either dimod.Sampler or zquantum.qubo.BQMSolver"""
+    if sampler_params is None:
+        sampler_params = {}
     solver = create_object(solver_specs)
     qubo = load_qubo(qubo)
-    sampleset = solver.sample(qubo, **sample_params)
+    sampleset = solver.sample(qubo, **sampler_params)
     best_sample_dict = sampleset.first.sample
     solution_bitstring = tuple(best_sample_dict[i] for i in sorted(best_sample_dict))
     Measurements([solution_bitstring]).save("solution.json")

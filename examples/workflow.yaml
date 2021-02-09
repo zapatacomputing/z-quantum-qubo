@@ -52,6 +52,8 @@ steps:
       module_name: dimod
       function_name: ExactSolver
     type: specs
+  - sampler_params: nul
+    type: specs
 
 - name: get-qubo-solution-with-neal
   passed: [generate-random-qubo]
@@ -69,7 +71,7 @@ steps:
       module_name: neal
       function_name: SimulatedAnnealingSampler
     type: specs
-  - sample_params:
+  - sampler_params:
       num_sweeps: 1000
       initial_states_generator: "random"
     type: specs
