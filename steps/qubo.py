@@ -2,6 +2,7 @@ import json
 from dimod import generators, BinaryQuadraticModel, ExactSolver
 from zquantum.qubo import save_qubo, load_qubo
 from zquantum.core.measurement import Measurements
+from zquantum.core.utils import SCHEMA_VERSION
 
 
 def generate_random_qubo(size: int, seed: int = None):
@@ -24,5 +25,4 @@ def get_exact_qubo_solution(qubo):
     best_sample_dict = sampleset.first.sample
     solution_bitstring = tuple(best_sample_dict[i] for i in sorted(best_sample_dict))
     Measurements([solution_bitstring]).save("exact_solution.json")
-    with open("sampleset.json", "w") as f:
-        f.write(json.dumps(sampleset.to_serializable()))
+    save_sampleset(sampleset, "sampleset.json")
