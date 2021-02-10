@@ -14,7 +14,7 @@ imports:
   type: git
   parameters:
     repository: "git@github.com:zapatacomputing/z-quantum-qubo.git"
-    branch: "dev"
+    branch: "176770493-save-sampleset-to-json"
 
 
 steps:
@@ -52,8 +52,14 @@ steps:
       module_name: dimod
       function_name: ExactSolver
     type: specs
-  - sampler_params: nul
+  - sampler_params: null
     type: specs
+
+  outputs:
+  - name: solution
+    type: measurements
+  - name: sampleset
+    type: sampleset
 
 - name: get-qubo-solution-with-neal
   passed: [generate-random-qubo]
