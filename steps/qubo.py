@@ -1,4 +1,3 @@
-import json
 from dimod import generators, BinaryQuadraticModel, ExactSolver
 from zquantum.qubo import save_qubo, load_qubo
 from zquantum.core.measurement import Measurements
