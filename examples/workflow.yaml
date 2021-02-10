@@ -14,7 +14,7 @@ imports:
   type: git
   parameters:
     repository: "git@github.com:zapatacomputing/z-quantum-qubo.git"
-    branch: "176770493-save-sampleset-to-json"
+    branch: "master"
 
 
 steps:
