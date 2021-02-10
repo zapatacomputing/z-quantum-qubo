@@ -78,11 +78,13 @@ steps:
       function_name: SimulatedAnnealingSampler
     type: specs
   - sampler_params:
+      num_reads: 100
       num_sweeps: 1000
-      initial_states_generator: "random"
-    type: specs
-  
+      beta_range: [0.1, 4.2]
+      beta_schedule_type: geometric
+      initial_states_generator: random
 
+    type: specs
   outputs:
   - name: solution
     type: measurements
