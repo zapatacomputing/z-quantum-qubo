@@ -1,10 +1,13 @@
 import pytest
+import numpy as np
 import dimod
 from zquantum.qubo.io import (
     bqm_to_serializable,
     bqm_from_serializable,
     save_qubo,
     load_qubo,
+    save_sampleset,
+    load_sampleset,
 )
 from io import StringIO
 
@@ -142,3 +145,16 @@ def test_loading_saved_qubo_gives_the_same_qubo():
     new_qubo = load_qubo(output_file)
 
     assert qubo == new_qubo
+
+
+def test_loading_saved_sampleset_gives_the_same_sampleset():
+    sampleset = dimod.SampleSet.from_samples(np.ones(5, dtype="int8"), "BINARY", 0)
+
+    output_file = StringIO()
+
+    save_sampleset(sampleset, output_file)
+    # Move to the beginning of the file
+    output_file.seek(0)
+    new_sampleset = load_sampleset(output_file)
+
+    assert sampleset == new_sampleset
