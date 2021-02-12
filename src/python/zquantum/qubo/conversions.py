@@ -1,5 +1,6 @@
 import numpy as np
 from openfermion import IsingOperator
+import dimod
 from dimod import BinaryQuadraticModel, SampleSet
 from typing import Optional
 
@@ -70,7 +71,10 @@ def convert_openfermion_ising_to_qubo(operator: IsingOperator) -> BinaryQuadrati
 def convert_sampleset_to_measurements(sampleset: SampleSet) -> Measurements:
     """
     Converts dimod SampleSet to zquantum.core Measurements.
-    NOTE: Since Measurements doesn't hold information about the energy of the samples, this conversion is lossy.
+    Works only for the sampleset with "BINARY" vartype and variables being range of integers starting from 0.
+
+    Note:
+        Since Measurements doesn't hold information about the energy of the samples, this conversion is lossy.
 
     Args:
         sampleset: SampleSet we want to convert
@@ -78,10 +82,17 @@ def convert_sampleset_to_measurements(sampleset: SampleSet) -> Measurements:
         Measurements object
 
     """
-    bitstrings = []
-    for sample in sampleset.samples():
-        bitstring = tuple(sample[i] for i in range(len(sample)))
-        bitstrings.append(bitstring)
+    if sampleset.vartype != dimod.BINARY:
+        raise TypeError("Sampleset needs to have vartype BINARY")
+    for i in range(max(sampleset.variables)):
+        if sampleset.variables[i] != i:
+            raise ValueError(
+                "Variables of sampleset need to be ordered list of integers"
+            )
+
+    bitstrings = [
+        tuple(sample[i] for i in range(len(sample))) for sample in sampleset.samples()
+    ]
     return Measurements(bitstrings)
 
 
@@ -99,9 +110,10 @@ def convert_measurements_to_sampleset(
     Returns:
         SampleSet object
     """
-    if bqm:
-        return SampleSet.from_samples_bqm(measurements.bitstrings, bqm)
-    else:
+    if not bqm:
         return SampleSet.from_samples(
             measurements.bitstrings, "BINARY", [np.nan for _ in measurements.bitstrings]
         )
+    if bqm.vartype != dimod.BINARY:
+        raise TypeError("BQM needs to have vartype BINARY")
+    return SampleSet.from_samples_bqm(measurements.bitstrings, bqm)
