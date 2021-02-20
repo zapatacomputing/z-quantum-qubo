@@ -36,13 +36,18 @@ steps:
   - name: qubo
     type: qubo
 
+<<<<<<< HEAD
 - name: get-qubo-solution
+=======
+- name: get-qubo-solution-exact
+>>>>>>> c41629ada0f6fae1d305f327471d061f760454b6
   passed: [generate-random-qubo]
   config:
     runtime:
       language: python3
       imports: [z-quantum-core, z-quantum-qubo]
       parameters:
+<<<<<<< HEAD
         file: z-quantum-qubo/steps/qubo.py
         function: get_exact_qubo_solution
   inputs:
@@ -51,7 +56,62 @@ steps:
   outputs:
   - name: exact_solution
     type: measurements
+=======
+        file: z-quantum-qubo/steps/solvers.py
+        function: solve_qubo
+  inputs:
+  - qubo: ((generate-random-qubo.qubo))
+    type: qubo
+  - solver_specs:
+      module_name: dimod
+      function_name: ExactSolver
+    type: specs
+  - sampler_params: null
+    type: specs
+
+  outputs:
+  - name: solution
+    type: measurements
+  - name: sampleset
+    type: sampleset
+
+- name: get-qubo-solution-with-neal
+  passed: [generate-random-qubo]
+  config:
+    runtime:
+      language: python3
+      imports: [z-quantum-core, z-quantum-qubo]
+      parameters:
+        file: z-quantum-qubo/steps/solvers.py
+        function: solve_qubo
+  inputs:
+  - qubo: ((generate-random-qubo.qubo))
+    type: qubo
+  - solver_specs:
+      module_name: neal
+      function_name: SimulatedAnnealingSampler
+    type: specs
+  - sampler_params:
+      num_reads: 100
+      num_sweeps: 1000
+      beta_range: [0.1, 4.2]
+      beta_schedule_type: geometric
+      initial_states_generator: random
+
+    type: specs
+  outputs:
+  - name: solution
+    type: measurements
+  - name: sampleset
+    type: sampleset
+
+>>>>>>> c41629ada0f6fae1d305f327471d061f760454b6
 
 types:
 - qubo
 - measurements
+<<<<<<< HEAD
+=======
+- sampleset
+- specs
+>>>>>>> c41629ada0f6fae1d305f327471d061f760454b6
