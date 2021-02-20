@@ -30,4 +30,4 @@ def convert_measurements_to_sampleset(measurements, qubo):
     qubo = load_qubo(qubo)
     measurements = Measurements.load_from_file(measurements)
     sampleset = _convert_measurements_to_sampleset(measurements, qubo)
-    save_sampleset(sampleset, "sampleset.json")
+    save_sampleset(sampleset.aggregate(), "sampleset.json")
