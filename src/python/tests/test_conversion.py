@@ -46,7 +46,6 @@ def test_qubo_with_non_binary_fractions():
     for key in qubo.quadratic.keys():
         assert np.isclose(qubo.quadratic[key], new_qubo.quadratic[key])
 
-
 def test_convert_sampleset_to_measurements():
     bitstrings = [
         (0, 0, 0),
