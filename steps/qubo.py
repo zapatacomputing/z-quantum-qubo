@@ -1,6 +1,11 @@
 from dimod import generators, BinaryQuadraticModel, ExactSolver
-from zquantum.qubo import (save_qubo, load_qubo, save_sampleset, convert_qubo_to_openfermion_ising,
-                            convert_measurements_to_sampleset as _convert_measurements_to_sampleset)
+from zquantum.qubo import (
+    save_qubo,
+    load_qubo,
+    save_sampleset,
+    convert_qubo_to_openfermion_ising,
+    convert_measurements_to_sampleset as _convert_measurements_to_sampleset,
+)
 
 from zquantum.core.openfermion import save_ising_operator
 from zquantum.core.measurement import Measurements
@@ -27,8 +32,12 @@ def get_qubo_hamiltonian(qubo):
     save_ising_operator(hamiltonian, "hamiltonian.json")
 
 
-def convert_measurements_to_sampleset(measurements, qubo):
+def convert_measurements_to_sampleset(
+    measurements, qubo, change_bitstring_convention=False
+):
     qubo = load_qubo(qubo)
     measurements = Measurements.load_from_file(measurements)
-    sampleset = _convert_measurements_to_sampleset(measurements, qubo)
+    sampleset = _convert_measurements_to_sampleset(
+        measurements, qubo, change_bitstring_convention
+    )
     save_sampleset(sampleset.aggregate(), "sampleset.json")

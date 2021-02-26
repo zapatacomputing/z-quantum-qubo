@@ -90,7 +90,6 @@ steps:
   - name: sampleset
     type: sampleset
 
-
 types:
 - qubo
 - measurements
