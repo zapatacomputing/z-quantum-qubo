@@ -82,7 +82,7 @@ def convert_sampleset_to_measurements(
 
     Args:
         sampleset: SampleSet we want to convert
-        change_bitstring_convention: whether to flip the bits in bitstrings in order to make them compatible convention (see note).
+        change_bitstring_convention: whether to flip the bits in bitstrings to, depends on the convention one is using (see note).
     Returns:
         Measurements object
 
@@ -130,7 +130,7 @@ def convert_measurements_to_sampleset(
     Args:
         measurements: Measurements object to be converted
         bqm: if provided, SampleSet will include energy values for each sample.
-        change_bitstring_convention: whether to flip the bits in bitstrings in order to make them compatible convention (see note).
+        change_bitstring_convention: whether to flip the bits in bitstrings to, depends on the convention one is using (see note).
     Returns:
         SampleSet object
     """
