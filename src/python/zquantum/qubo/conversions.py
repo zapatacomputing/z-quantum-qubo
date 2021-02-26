@@ -142,7 +142,7 @@ def convert_measurements_to_sampleset(
         raise TypeError("BQM needs to have vartype BINARY")
 
     bitstrings = [
-        [int(change_bitstring_convention != bit) for bit in bitstring]
+        tuple(int(change_bitstring_convention != bit) for bit in bitstring)
         for bitstring in measurements.bitstrings
     ]
 
