@@ -22,8 +22,8 @@ def generate_random_qubo(size: int, seed: int = None):
     save_qubo(qubo, "qubo.json")
 
 
-def get_qubo_hamiltonian(qubo):
-    """Convert qubo to Ising Hamiltonian.
+def qubo_to_ising_hamiltonian(qubo):
+    """Converts qubo to Ising Hamiltonian.
     Args:
         qubo: qubo stored as a json
     """
