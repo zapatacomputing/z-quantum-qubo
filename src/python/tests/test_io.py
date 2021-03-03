@@ -146,6 +146,7 @@ def test_loading_saved_qubo_gives_the_same_qubo():
 
     assert qubo == new_qubo
 
+
 def test_loading_saved_sampleset_gives_the_same_sampleset():
     sampleset = dimod.SampleSet.from_samples(np.ones(5, dtype="int8"), "BINARY", 0)
 

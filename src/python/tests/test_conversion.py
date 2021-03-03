@@ -46,6 +46,7 @@ def test_qubo_with_non_binary_fractions():
     for key in qubo.quadratic.keys():
         assert np.isclose(qubo.quadratic[key], new_qubo.quadratic[key])
 
+
 def test_convert_sampleset_to_measurements():
     bitstrings = [
         (0, 0, 0),
@@ -62,6 +63,41 @@ def test_convert_sampleset_to_measurements():
     sampleset = dimod.SampleSet.from_samples(bitstrings, dimod.BINARY, energies)
     target_measurements = Measurements(bitstrings)
     converted_measurements = convert_sampleset_to_measurements(sampleset)
+
+    assert converted_measurements.bitstrings == target_measurements.bitstrings
+
+
+def test_convert_sampleset_to_measurements_with_change_bitstring_convention():
+    bitstrings = [
+        (0, 0, 0),
+        (0, 0, 1),
+        (0, 1, 0),
+        (0, 1, 1),
+        (1, 0, 0),
+        (1, 1, 0),
+        (1, 1, 1),
+        (1, 0, 1),
+        (0, 0, 1),
+    ]
+
+    target_bitstrings = [
+        (1, 1, 1),
+        (1, 1, 0),
+        (1, 0, 1),
+        (1, 0, 0),
+        (0, 1, 1),
+        (0, 0, 1),
+        (0, 0, 0),
+        (0, 1, 0),
+        (1, 1, 0),
+    ]
+    change_bitstring_convention = True
+    energies = [0 for i in range(len(bitstrings))]
+    sampleset = dimod.SampleSet.from_samples(bitstrings, dimod.BINARY, energies)
+    target_measurements = Measurements(target_bitstrings)
+    converted_measurements = convert_sampleset_to_measurements(
+        sampleset, change_bitstring_convention=change_bitstring_convention
+    )
 
     assert converted_measurements.bitstrings == target_measurements.bitstrings
 
@@ -116,6 +152,48 @@ def test_convert_measurements_to_sampleset_without_qubo():
         bitstrings, dimod.BINARY, [np.nan for _ in bitstrings]
     )
     converted_sampleset = convert_measurements_to_sampleset(measurements)
+
+    # Since energies should be np.nans, using "==" will result in error
+    for (target_record, converted_record) in zip(
+        target_sampleset.record, converted_sampleset.record
+    ):
+        for target_element, converted_element in zip(target_record, converted_record):
+            np.testing.assert_equal(target_element, converted_element)
+
+    assert converted_sampleset.vartype == target_sampleset.vartype
+
+
+def test_convert_measurements_to_sampleset_with_change_bitstring_convention():
+    bitstrings = [
+        (0, 0, 0),
+        (0, 0, 1),
+        (0, 1, 0),
+        (0, 1, 1),
+        (1, 0, 0),
+        (1, 1, 0),
+        (1, 1, 1),
+        (1, 0, 1),
+        (0, 0, 1),
+    ]
+    target_bitstrings = [
+        (1, 1, 1),
+        (1, 1, 0),
+        (1, 0, 1),
+        (1, 0, 0),
+        (0, 1, 1),
+        (0, 0, 1),
+        (0, 0, 0),
+        (0, 1, 0),
+        (1, 1, 0),
+    ]
+    change_bitstring_convention = True
+    measurements = Measurements(bitstrings)
+    target_sampleset = dimod.SampleSet.from_samples(
+        target_bitstrings, dimod.BINARY, [np.nan for _ in bitstrings]
+    )
+    converted_sampleset = convert_measurements_to_sampleset(
+        measurements, change_bitstring_convention=change_bitstring_convention
+    )
 
     # Since energies should be np.nans, using "==" will result in error
     for (target_record, converted_record) in zip(
