@@ -56,9 +56,7 @@ def solve_qp_relaxation_of_non_spd_qubo(
 
     for _ in range(number_of_trials):
         initial_params = np.random.uniform(0.0, 1.0, size=size)
-        optimization_results = optimizer.minimize(
-            cost_function, initial_params, constraints=[linear_constraint]
-        )
+        optimization_results = optimizer.minimize(cost_function, initial_params)
         if final_value is None or final_value < optimization_results.opt_value:
             final_value = optimization_results.opt_value
             final_params = optimization_results.opt_params
