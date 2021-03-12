@@ -30,4 +30,4 @@ def solve_relaxed_qubo(
         solution = regularize_solution()
 
     save_list(solution.tolist(), "solution.json")
-    save_value_estimate(ValueEstimate(final_value))
+    save_value_estimate(ValueEstimate(optimal_value))
