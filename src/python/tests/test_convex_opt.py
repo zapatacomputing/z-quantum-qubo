@@ -1,9 +1,9 @@
 import pytest
 import dimod
 import numpy as np
+import cvxpy
 from zquantum.core.interfaces.mock_objects import MockOptimizer
 from zquantum.qubo.convex_opt import (
-    solve_qp_relaxation_of_qubo,
     solve_qp_relaxation_of_spd_qubo,
     solve_qp_relaxation_of_non_spd_qubo,
     is_matrix_semi_positive_definite,
@@ -11,18 +11,33 @@ from zquantum.qubo.convex_opt import (
 )
 
 
-def test_solve_qp_relaxation_of_qubo():
-    # TODO
-    pass
+@pytest.fixture
+def optimizer():
+    optimizer = MockOptimizer()
+    optimizer.constraints = None
+    return optimizer
 
 
-def test_solve_qp_relaxation_of_spd_qubo():
-    qubo = dimod.BinaryQuadraticModel(
-        {0: 5, 1: 6, 2: 7},
-        {(1, 2): 1, (1, 0): 2, (0, 2): 3},
-        0,
-        vartype=dimod.BINARY,
-    )
+@pytest.fixture
+def qubo(request):
+    if request.param:
+        return dimod.BinaryQuadraticModel(
+            {0: 5, 1: 6, 2: 7},
+            {(1, 2): 1, (1, 0): 2, (0, 2): 3},
+            0,
+            vartype=dimod.BINARY,
+        )
+    else:
+        return dimod.BinaryQuadraticModel(
+            {0: -10, 1: -12, 2: -14},
+            {(1, 2): 1, (1, 0): 2, (0, 2): 3},
+            0,
+            vartype=dimod.BINARY,
+        )
+
+
+@pytest.mark.parametrize("qubo", [True], indirect=True)
+def test_solve_qp_relaxation_of_spd_qubo(qubo):
     target_solution = np.array([0, 0, 0])
     solution, optimal_value = solve_qp_relaxation_of_spd_qubo(qubo)
 
@@ -30,7 +45,27 @@ def test_solve_qp_relaxation_of_spd_qubo():
     assert np.allclose(solution, target_solution)
 
 
-def test_solve_qp_relaxation_of_non_spd_qubo():
+@pytest.mark.parametrize("qubo", [False], indirect=True)
+def test_solve_qp_relaxation_of_spd_qubo_fails_for_non_spd_matrix(qubo):
+    target_solution = np.array([0, 0, 0])
+    with pytest.raises(cvxpy.error.DCPError):
+        solution, optimal_value = solve_qp_relaxation_of_spd_qubo(qubo)
+
+
+def test_solve_qp_relaxation_of_non_spd_qubo(optimizer):
+    qubo = dimod.BinaryQuadraticModel(
+        {0: -10, 1: 2, 2: 3},
+        {(1, 2): -1, (1, 0): 2, (0, 2): 3},
+        0,
+        vartype=dimod.BINARY,
+    )
+    solution, optimal_value = solve_qp_relaxation_of_non_spd_qubo(qubo, optimizer)
+
+    assert isinstance(optimal_value, float)
+    assert len(solution == 3)
+
+
+def test_solve_qp_relaxation_of_non_spd_qubo_throws_error_when_optimizer_does_not_support_constraints():
     qubo = dimod.BinaryQuadraticModel(
         {0: -10, 1: 2, 2: 3},
         {(1, 2): -1, (1, 0): 2, (0, 2): 3},
@@ -38,11 +73,8 @@ def test_solve_qp_relaxation_of_non_spd_qubo():
         vartype=dimod.BINARY,
     )
     optimizer = MockOptimizer()
-    optimizer.constraints = None
-    solution, optimal_value = solve_qp_relaxation_of_non_spd_qubo(qubo, optimizer)
-
-    assert isinstance(optimal_value, float)
-    assert len(solution == 3)
+    with pytest.raises(ValueError):
+        solution, optimal_value = solve_qp_relaxation_of_non_spd_qubo(qubo, optimizer)
 
 
 @pytest.mark.parametrize(
