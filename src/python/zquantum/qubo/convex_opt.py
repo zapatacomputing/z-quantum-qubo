@@ -1,18 +1,10 @@
 import dimod
 import numpy as np
 import cvxpy as cp
-from zquantum.core.interfaces.optimizer import Optimizer
+from typing import Optional
 from scipy.optimize import LinearConstraint
 
-
-def solve_qp_relaxation_of_qubo(
-    qubo: dimod.BQM, optimizer: Optimizer, number_of_trials: int = 1
-) -> (np.ndarray, float):
-    qubo_matrix = qubo.to_numpy_matrix().astype(float)
-    if is_matrix_semi_positive_definite(qubo_matrix):
-        return solve_qp_relaxation_of_spd_qubo(qubo)
-    else:
-        return solve_qp_relaxation_of_non_spd_qubo(qubo, optimizer, number_of_trials)
+from zquantum.core.interfaces.optimizer import Optimizer
 
 
 def solve_qp_relaxation_of_spd_qubo(qubo: dimod.BQM) -> (np.ndarray, float):
@@ -37,6 +29,9 @@ def solve_qp_relaxation_of_spd_qubo(qubo: dimod.BQM) -> (np.ndarray, float):
 def solve_qp_relaxation_of_non_spd_qubo(
     qubo: dimod.BQM, optimizer: Optimizer, number_of_trials: int = 1
 ) -> (np.ndarray, float):
+    if qubo.vartype != dimod.BINARY:
+        raise TypeError("Qubo needs to have vartype BINARY.")
+
     # Use an optimizer to solve non-convex QP relaxations
     if not hasattr(optimizer, "constraints"):
         raise ValueError("Optimizer needs to support constraints.")
