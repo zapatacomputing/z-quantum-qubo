@@ -1,0 +1,78 @@
+# Workflow API version
+apiVersion: io.orquestra.workflow/1.0.0
+
+# Prefix for workflow ID
+name: qubo-example
+
+imports:
+- name: z-quantum-core
+  type: git
+  parameters:
+    repository: "git@github.com:zapatacomputing/z-quantum-core.git"
+    branch: "master"
+- name: z-quantum-qubo
+  type: git
+  parameters:
+    repository: "git@github.com:zapatacomputing/z-quantum-qubo.git"
+    branch: "master"
+- name: z-quantum-optimizers
+  type: git
+  parameters:
+    repository: "git@github.com:zapatacomputing/z-quantum-optimizers.git"
+    branch: "master"
+
+steps:
+- name: generate-random-qubo
+  config:
+    runtime:
+      language: python3
+      imports: [z-quantum-core, z-quantum-qubo]
+      parameters:
+        file: z-quantum-qubo/steps/qubo.py
+        function: generate_random_qubo
+  inputs:
+  - size: 5
+    type: int
+  - seed: 1000
+    type: int
+
+  outputs:
+  - name: qubo
+    type: qubo
+
+- name: get-solution-of-qp-relaxation-of-qubo
+  passed: [generate-random-qubo]
+  config:
+    runtime:
+      language: python3
+      imports: [z-quantum-core, z-quantum-qubo, z-quantum-optimizers]
+      parameters:
+        file: z-quantum-qubo/steps/relaxed_qubo.py
+        function: solve_relaxed_qubo
+  inputs:
+  - qubo: ((generate-random-qubo.qubo))
+    type: qubo
+  - regularize_solution: False
+    type: bool
+  - epsilon: 0.5
+    type: float
+  - optimizer_specs:
+      module_name: zquantum.optimizers.scipy_optimizer
+      function_name: ScipyOptimizer
+      method: COBYLA
+    type: specs
+  - number_of_trials: 10
+    type: int
+
+  outputs:
+  - name: solution
+    type: measurements
+  - name: energy
+    type: float
+
+
+types:
+- qubo
+- measurements
+- specs
+
