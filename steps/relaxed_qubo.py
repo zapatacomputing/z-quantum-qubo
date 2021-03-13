@@ -27,7 +27,7 @@ def solve_relaxed_qubo(
     if is_matrix_semi_positive_definite(qubo_matrix):
         solution, optimal_value = solve_qp_relaxation_of_spd_qubo(qubo)
     else:
-        if optimizer is None:
+        if optimizer_specs is None:
             raise ValueError(
                 "For qubo with semipositive definite matrix, an optimizer must be provided."
             )
