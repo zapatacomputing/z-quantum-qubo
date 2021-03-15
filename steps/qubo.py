@@ -4,10 +4,11 @@ from zquantum.qubo import (
     load_qubo,
     save_sampleset,
     convert_qubo_to_openfermion_ising,
+    convert_openfermion_ising_to_qubo,
     convert_measurements_to_sampleset as _convert_measurements_to_sampleset,
 )
 
-from zquantum.core.openfermion import save_ising_operator
+from zquantum.core.openfermion import save_ising_operator, load_ising_operator
 from zquantum.core.measurement import Measurements
 from zquantum.core.utils import SCHEMA_VERSION
 
@@ -30,6 +31,16 @@ def qubo_to_ising_hamiltonian(qubo):
     qubo = load_qubo(qubo)
     hamiltonian = convert_qubo_to_openfermion_ising(qubo)
     save_ising_operator(hamiltonian, "hamiltonian.json")
+
+
+def ising_hamiltonian_to_qubo(hamiltonian):
+    """Converts Ising Hamiltonian to qubo.
+    Args:
+        hamiltonian: hamiltonian stored as a json
+    """
+    hamiltonian = load_ising_operator(hamiltonian)
+    qubo = convert_openfermion_ising_to_qubo(hamiltonian)
+    save_qubo(qubo, "qubo.json")
 
 
 def convert_measurements_to_sampleset(
