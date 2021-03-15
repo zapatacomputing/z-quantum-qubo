@@ -86,7 +86,7 @@ def solve_qp_problem_with_optimizer(
     for _ in range(number_of_trials):
         initial_params = np.random.uniform(0.0, 1.0, size=size)
         optimization_results = optimizer.minimize(cost_function, initial_params)
-        if final_value is None or final_value < optimization_results.opt_value:
+        if final_value is None or optimization_results.opt_value < final_value:
             final_value = optimization_results.opt_value
             final_params = optimization_results.opt_params
 
@@ -111,7 +111,7 @@ def is_matrix_semi_positive_definite(
     return np.min(eigenvalues) >= epsilon
 
 
-def regularize_relaxed_solution(
+def convert_relaxed_solution_to_angles(
     relaxed_solution: np.ndarray, epsilon: float = 0.5
 ) -> np.ndarray:
     """
@@ -123,12 +123,12 @@ def regularize_relaxed_solution(
         epsilon: regularization constant.
 
     Returns:
-        np.ndarray: regularized values.
+        np.ndarray: conveerted values.
     """
     if not ((relaxed_solution >= 0) & (relaxed_solution <= 1)).all():
         raise ValueError("Relaxed solution must consist of values between 0 and 1.")
 
-    regularized_solution = []
+    converted_solution = []
     for value in relaxed_solution:
         if value > epsilon and value < 1 - epsilon:
             regularized_value = 2 * np.arcsin(np.sqrt(value))
@@ -136,5 +136,5 @@ def regularize_relaxed_solution(
             regularized_value = 2 * np.arcsin(np.sqrt(epsilon))
         else:
             regularized_value = 2 * np.arcsin(np.sqrt(1 - epsilon))
-        regularized_solution.append(regularized_value)
-    return np.array(regularized_solution)
+        converted_solution.append(regularized_value)
+    return np.array(converted_solution)

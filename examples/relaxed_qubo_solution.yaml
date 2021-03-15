@@ -52,7 +52,7 @@ steps:
   inputs:
   - qubo: ((generate-random-qubo.qubo))
     type: qubo
-  - regularize_solution: False
+  - convert_to_angles: True
     type: bool
   - epsilon: 0.5
     type: float
