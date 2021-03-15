@@ -1,11 +1,10 @@
 import pytest
 import dimod
 import numpy as np
-import cvxpy
 from zquantum.core.interfaces.mock_objects import MockOptimizer
 from zquantum.qubo.convex_opt import (
-    solve_qp_relaxation_of_spd_qubo,
-    solve_qp_relaxation_of_non_spd_qubo,
+    solve_qp_problem_for_spd_matrix,
+    solve_qp_problem_with_optimizer,
     is_matrix_semi_positive_definite,
     regularize_relaxed_solution,
 )
@@ -18,68 +17,48 @@ def optimizer():
     return optimizer
 
 
-@pytest.fixture
-def qubo(request):
-    if request.param:
-        return dimod.BinaryQuadraticModel(
-            {0: 5, 1: 6, 2: 7},
-            {(1, 2): 1, (1, 0): 2, (0, 2): 3},
-            0,
-            vartype=dimod.BINARY,
-        )
-    else:
-        return dimod.BinaryQuadraticModel(
-            {0: -10, 1: -12, 2: -14},
-            {(1, 2): 1, (1, 0): 2, (0, 2): 3},
-            0,
-            vartype=dimod.BINARY,
-        )
+def spd_matrix():
+    return np.array([[5, 1, 2], [0, 6, 2], [0, 0, 7]])
 
 
-@pytest.mark.parametrize("qubo", [True], indirect=True)
-def test_solve_qp_relaxation_of_spd_qubo(qubo):
+def non_spd_matrix():
+    return np.array([[-10, 1, 2], [0, -12, 2], [0, 0, -14]])
+
+
+@pytest.mark.parametrize("matrix", [spd_matrix()])
+def test_solve_qp_problem_for_spd_matrix(matrix):
     target_solution = np.array([0, 0, 0])
-    solution, optimal_value = solve_qp_relaxation_of_spd_qubo(qubo)
+    solution, optimal_value = solve_qp_problem_for_spd_matrix(matrix)
 
     assert pytest.approx(optimal_value) == 0
     assert np.allclose(solution, target_solution)
 
 
-@pytest.mark.parametrize("qubo", [False], indirect=True)
-def test_solve_qp_relaxation_of_spd_qubo_fails_for_non_spd_matrix(qubo):
-    target_solution = np.array([0, 0, 0])
-    with pytest.raises(cvxpy.error.DCPError):
-        solution, optimal_value = solve_qp_relaxation_of_spd_qubo(qubo)
+@pytest.mark.parametrize("matrix", [non_spd_matrix()])
+def test_solve_qp_problem_for_spd_matrix_fails_for_non_spd_matrix(matrix):
+    with pytest.raises(ValueError):
+        solution, optimal_value = solve_qp_problem_for_spd_matrix(matrix)
 
 
-def test_solve_qp_relaxation_of_non_spd_qubo(optimizer):
-    qubo = dimod.BinaryQuadraticModel(
-        {0: -10, 1: 2, 2: 3},
-        {(1, 2): -1, (1, 0): 2, (0, 2): 3},
-        0,
-        vartype=dimod.BINARY,
-    )
-    solution, optimal_value = solve_qp_relaxation_of_non_spd_qubo(qubo, optimizer)
+@pytest.mark.parametrize("matrix", [spd_matrix(), non_spd_matrix()])
+def test_solve_qp_problem_with_optimizer(matrix, optimizer):
+    solution, optimal_value = solve_qp_problem_with_optimizer(matrix, optimizer)
 
     assert isinstance(optimal_value, float)
     assert len(solution == 3)
 
 
-def test_solve_qp_relaxation_of_non_spd_qubo_throws_error_when_optimizer_does_not_support_constraints():
-    qubo = dimod.BinaryQuadraticModel(
-        {0: -10, 1: 2, 2: 3},
-        {(1, 2): -1, (1, 0): 2, (0, 2): 3},
-        0,
-        vartype=dimod.BINARY,
-    )
+@pytest.mark.parametrize("matrix", [spd_matrix()])
+def test_solve_qp_problem_with_optimizer_throws_error_when_optimizer_does_not_support_constraints(
+    matrix,
+):
     optimizer = MockOptimizer()
     with pytest.raises(ValueError):
-        solution, optimal_value = solve_qp_relaxation_of_non_spd_qubo(qubo, optimizer)
+        solution, optimal_value = solve_qp_problem_with_optimizer(matrix, optimizer)
 
 
 @pytest.mark.parametrize(
-    "matrix,expected",
-    [(np.array([[1, 2], [1, 3]]), True), (np.array([[-100, 1], [1, 1]]), False)],
+    "matrix,expected", [(spd_matrix(), True), (non_spd_matrix(), False)]
 )
 def test_is_matrix_semi_positive_definite(matrix, expected):
     assert is_matrix_semi_positive_definite(matrix) == expected
@@ -95,5 +74,16 @@ def test_regularize_relaxed_solution():
             2 * np.arcsin(np.sqrt(1 - epsilon)),
         ]
     )
-    regularized_solution = regularize_relaxed_solution(relaxed_solution, epsilon=0.1)
+    regularized_solution = regularize_relaxed_solution(
+        relaxed_solution, epsilon=epsilon
+    )
     assert np.allclose(regularized_solution, target_regularized_solution)
+
+
+def test_regularize_relaxed_solution_throws_exception_for_invalid_parameters():
+    relaxed_solution = np.array([-1, 2, 1])
+
+    with pytest.raises(ValueError):
+        regularized_solution = regularize_relaxed_solution(
+            relaxed_solution, epsilon=0.1
+        )
