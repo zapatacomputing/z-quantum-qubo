@@ -10,13 +10,11 @@ from zquantum.qubo.convex_opt import (
     is_matrix_semi_positive_definite,
     solve_qp_problem_for_spd_matrix,
     solve_qp_problem_with_optimizer,
-    convert_relaxed_solution_to_angles,
 )
 
 
 def solve_relaxed_qubo(
     qubo,
-    convert_to_angles=True,
     epsilon=0.5,
     optimizer_specs=None,
     number_of_trials=10,
@@ -41,9 +39,6 @@ def solve_relaxed_qubo(
         solution, optimal_value = solve_qp_problem_with_optimizer(
             qubo_matrix, optimizer, number_of_trials, symmetrize_matrix
         )
-
-    if convert_to_angles:
-        solution = convert_relaxed_solution_to_angles(solution, epsilon)
 
     save_list(solution.tolist(), "solution.json")
     save_value_estimate(ValueEstimate(optimal_value), "energy.json")

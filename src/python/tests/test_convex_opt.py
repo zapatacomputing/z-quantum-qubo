@@ -6,7 +6,6 @@ from zquantum.qubo.convex_opt import (
     solve_qp_problem_for_spd_matrix,
     solve_qp_problem_with_optimizer,
     is_matrix_semi_positive_definite,
-    convert_relaxed_solution_to_angles,
 )
 
 
@@ -62,28 +61,3 @@ def test_solve_qp_problem_with_optimizer_throws_error_when_optimizer_does_not_su
 )
 def test_is_matrix_semi_positive_definite(matrix, expected):
     assert is_matrix_semi_positive_definite(matrix) == expected
-
-
-def test_convert_relaxed_solution_to_angles():
-    relaxed_solution = np.array([0, 0.5, 1])
-    epsilon = 0.1
-    target_converted_solution = np.array(
-        [
-            2 * np.arcsin(np.sqrt(epsilon)),
-            2 * np.arcsin(np.sqrt(0.5)),
-            2 * np.arcsin(np.sqrt(1 - epsilon)),
-        ]
-    )
-    converted_solution = convert_relaxed_solution_to_angles(
-        relaxed_solution, epsilon=epsilon
-    )
-    assert np.allclose(converted_solution, target_converted_solution)
-
-
-def test_convert_relaxed_solution_to_angles_throws_exception_for_invalid_parameters():
-    relaxed_solution = np.array([-1, 2, 1])
-
-    with pytest.raises(ValueError):
-        converted_solution = convert_relaxed_solution_to_angles(
-            relaxed_solution, epsilon=0.1
-        )
