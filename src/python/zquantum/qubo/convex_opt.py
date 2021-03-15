@@ -93,22 +93,19 @@ def solve_qp_problem_with_optimizer(
     return final_params, final_value
 
 
-def is_matrix_semi_positive_definite(
-    matrix: np.ndarray, epsilon: float = 1e-15
-) -> bool:
+def is_matrix_semi_positive_definite(matrix: np.ndarray) -> bool:
     """
     Checks whether matrix is semi positive definite.
 
     Args:
         matrix: a matrix that should be checked.
-        epsilon: defines up to what precision it should be checked whether eigenvalues are greater or equal to 0.
 
     Returns:
         bool: True if matrix is SPD, False otherwise.
 
     """
     eigenvalues, _ = np.linalg.eig(matrix)
-    return np.min(eigenvalues) >= epsilon
+    return np.min(eigenvalues) >= 0
 
 
 def convert_relaxed_solution_to_angles(
