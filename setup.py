@@ -18,8 +18,8 @@ setuptools.setup(
     ),
     install_requires=[
         "z-quantum-core",
-        "dimod==0.9.11",
-        "dwave-neal==0.5.7",
+        "dimod>=0.9.11",
+        "dwave-neal>=0.5.7",
         "cvxpy~=1.1.11",
     ],
 )
