@@ -7,15 +7,14 @@ from zquantum.core.utils import (
 )
 from zquantum.qubo import load_qubo
 from zquantum.qubo.convex_opt import (
-    is_matrix_semi_positive_definite,
-    solve_qp_problem_for_spd_matrix,
+    is_matrix_positive_semidefinite,
+    solve_qp_problem_for_psd_matrix,
     solve_qp_problem_with_optimizer,
 )
 
 
 def solve_relaxed_qubo(
     qubo,
-    epsilon=0.5,
     optimizer_specs=None,
     number_of_trials=10,
     symmetrize_matrix=True,
@@ -26,8 +25,8 @@ def solve_relaxed_qubo(
     if symmetrize_matrix:
         qubo_matrix = (qubo_matrix + qubo_matrix.T) / 2
 
-    if is_matrix_semi_positive_definite(qubo_matrix):
-        solution, optimal_value = solve_qp_problem_for_spd_matrix(
+    if is_matrix_positive_semidefinite(qubo_matrix):
+        solution, optimal_value = solve_qp_problem_for_psd_matrix(
             qubo_matrix, symmetrize_matrix
         )
     else:
