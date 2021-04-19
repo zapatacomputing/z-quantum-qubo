@@ -25,7 +25,7 @@ def convert_qubo_to_openfermion_ising(qubo: BinaryQuadraticModel) -> IsingOperat
         list_of_ising_strings.append(f"{value}[Z{i}]")
 
     for (i, j), value in quadratic_coeffs.items():
-        list_of_ising_strings.append(f"{value}[Z{i} Z{j}]")
+        list_of_ising_strings.append(f"{-value}[Z{i} Z{j}]")
 
     ising_string = " + ".join(list_of_ising_strings)
     return IsingOperator(ising_string)
@@ -54,7 +54,7 @@ def convert_openfermion_ising_to_qubo(operator: IsingOperator) -> BinaryQuadrati
         if len(term) == 0:
             offset = coeff
         if len(term) == 1:
-            linear_terms[term[0][0]] = coeff
+            linear_terms[term[0][0]] = -coeff
         if len(term) == 2:
             quadratic_terms[(term[0][0], term[1][0])] = coeff
         if len(term) > 2:
