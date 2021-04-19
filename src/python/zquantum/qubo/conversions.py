@@ -11,7 +11,7 @@ def convert_qubo_to_openfermion_ising(qubo: BinaryQuadraticModel) -> IsingOperat
     """Converts dimod BinaryQuadraticModel to OpenFermion IsingOperator object.
 
     The resulting Openfermion IsingOperator has the following property:
-    For every bitstring, its expected value is the same as the one of the original QUBO.
+    For every bitstring, its expected value is the same as the energy of the original QUBO.
     In order to ensure this, we had to add a minus sign for the coefficients
     of the linear terms coming from dimod conversion.
     For more context about conventions used please refer to note in `convert_measurements_to_sampleset` docstring.
@@ -41,7 +41,7 @@ def convert_openfermion_ising_to_qubo(operator: IsingOperator) -> BinaryQuadrati
     """
     Converts dimod Openfermion IsingOperator to BinaryQuadraticModel object.
     The resulting QUBO has the following property:
-    For every bitstring, its expected value is the same as the one of the original Ising Hamiltonian.
+    For every bitstring, its energy is the same as the expected value of the original Ising Hamiltonian.
     For more context about conventions used please refer to note in `convert_measurements_to_sampleset` docstring.
 
     Note:
