@@ -1,5 +1,7 @@
 # z-quantum-qubo
 
+[![codecov](https://codecov.io/gh/zapatacomputing/z-quantum-qubo/branch/master/graph/badge.svg?token=L1R1SMPNX3)](https://codecov.io/gh/zapatacomputing/z-quantum-qubo)
+
 ## What is it?
 
 `z-quantum-qubo` is a library with functions for manipulating Quadratic Unconstrained Binary Optimization problems (QUBO) used for  [Orquestra](https://www.zapatacomputing.com/orquestra/) – the platform developed by [Zapata Computing](https://www.zapatacomputing.com) for performing computations on quantum computers.
