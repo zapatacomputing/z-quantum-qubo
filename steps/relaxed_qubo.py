@@ -1,9 +1,9 @@
-from scipy.optimize import minimize, LinearConstraint
+from scipy.optimize import LinearConstraint, minimize
 from zquantum.core.utils import (
-    save_list,
-    save_value_estimate,
     ValueEstimate,
     create_object,
+    save_list,
+    save_value_estimate,
 )
 from zquantum.qubo import load_qubo
 from zquantum.qubo.convex_opt import (
@@ -32,7 +32,8 @@ def solve_relaxed_qubo(
     else:
         if optimizer_specs is None:
             raise ValueError(
-                "For qubo with semipositive definite matrix, an optimizer must be provided."
+                "For qubo with semipositive definite matrix, an optimizer must be "
+                "provided."
             )
         optimizer = create_object(optimizer_specs)
         solution, optimal_value = solve_qp_problem_with_optimizer(

@@ -1,4 +1,16 @@
+import warnings
+
 import setuptools
+
+try:
+    from subtrees.z_quantum_actions.setup_extras import extras
+except ImportError:
+    warnings.warn("Unable to import extras")
+    extras = {}
+
+with open("README.md", "r") as f:
+    long_description = f.read()
+
 
 setuptools.setup(
     name="z-quantum-qubo",
@@ -22,4 +34,5 @@ setuptools.setup(
         "dwave-neal>=0.5.7",
         "cvxpy~=1.1.11",
     ],
+    extras_require=extras,
 )
