@@ -7,7 +7,8 @@ from zquantum.core.utils import ValueEstimate, save_value_estimate
 
 
 def solve_qubo(qubo, solver_specs, solver_params=None):
-    """Solves qubo using any sampler implementing either dimod.Sampler or zquantum.qubo.BQMSolver"""
+    """Solves qubo using any sampler implementing either dimod.Sampler
+    or zquantum.qubo.BQMSolver"""
     if solver_params is None:
         solver_params = {}
     solver = create_object(solver_specs)

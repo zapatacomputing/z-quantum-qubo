@@ -32,7 +32,8 @@ def solve_relaxed_qubo(
     else:
         if optimizer_specs is None:
             raise ValueError(
-                "For qubo with semipositive definite matrix, an optimizer must be provided."
+                "For qubo with semipositive definite matrix, an optimizer must be "
+                "provided."
             )
         optimizer = create_object(optimizer_specs)
         solution, optimal_value = solve_qp_problem_with_optimizer(
