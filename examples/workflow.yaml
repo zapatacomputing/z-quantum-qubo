@@ -9,12 +9,12 @@ imports:
   type: git
   parameters:
     repository: "git@github.com:zapatacomputing/z-quantum-core.git"
-    branch: "master"
+    branch: "main"
 - name: z-quantum-qubo
   type: git
   parameters:
     repository: "git@github.com:zapatacomputing/z-quantum-qubo.git"
-    branch: "master"
+    branch: "main"
 
 
 steps:

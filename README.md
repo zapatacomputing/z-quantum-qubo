@@ -1,6 +1,6 @@
 # z-quantum-qubo
 
-[![codecov](https://codecov.io/gh/zapatacomputing/z-quantum-qubo/branch/master/graph/badge.svg?token=L1R1SMPNX3)](https://codecov.io/gh/zapatacomputing/z-quantum-qubo)
+[![codecov](https://codecov.io/gh/zapatacomputing/z-quantum-qubo/branch/main/graph/badge.svg?token=L1R1SMPNX3)](https://codecov.io/gh/zapatacomputing/z-quantum-qubo)
 
 ## What is it?
 
@@ -19,7 +19,7 @@ imports:
   type: git
   parameters:
     repository: "git@github.com:zapatacomputing/z-quantum-qubo.git"
-    branch: "master"
+    branch: "main"
 ```
 
 and then add it in the `imports` argument of your `step`:
