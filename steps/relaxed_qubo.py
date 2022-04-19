@@ -1,3 +1,6 @@
+################################################################################
+# © Copyright 2021 Zapata Computing Inc.
+################################################################################
 from scipy.optimize import LinearConstraint, minimize
 from zquantum.core.utils import (
     ValueEstimate,

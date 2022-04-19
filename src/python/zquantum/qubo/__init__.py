@@ -1,3 +1,6 @@
+################################################################################
+# © Copyright 2020-2021 Zapata Computing Inc.
+################################################################################
 from .conversions import (
     convert_measurements_to_sampleset,
     convert_openfermion_ising_to_qubo,
