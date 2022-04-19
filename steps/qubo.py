@@ -1,3 +1,6 @@
+################################################################################
+# © Copyright 2020-2021 Zapata Computing Inc.
+################################################################################
 from dimod import BinaryQuadraticModel, ExactSolver, generators
 from zquantum.core.measurement import Measurements
 from zquantum.core.openfermion import load_ising_operator, save_ising_operator
