@@ -1,3 +1,6 @@
+################################################################################
+# © Copyright 2021-2022 Zapata Computing Inc.
+################################################################################
 import numpy as np
 import pytest
 from zquantum.core.interfaces.mock_objects import MockOptimizer
